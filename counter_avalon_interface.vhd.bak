@@ -1,0 +1,29 @@
+
+
+entity counter_avalon_interface is
+    Port (
+        clk        : in std_logic;
+        reset      : in std_logic;
+        av_address : in std_logic_vector(2 downto 0);
+        av_read    : in std_logic;
+        av_write   : in std_logic;
+        av_readdata: out std_logic_vector(31 downto 0);
+        av_writedata: in std_logic_vector(31 downto 0)
+    );
+end counter_avalon_interface;
+
+architecture Behavioral of counter_avalon_interface is
+    signal counter: unsigned(3 downto 0) := "0000";
+begin
+    process(clk, reset)
+    begin
+        if reset = '1' then
+            counter <= "0000";
+        elsif rising_edge(clk) then
+            counter <= counter + 1;
+        end if;
+    end process;
+
+    av_readdata <= (others => '0');
+    av_readdata(3 downto 0) <= std_logic_vector(counter);
+end Behavioral;
